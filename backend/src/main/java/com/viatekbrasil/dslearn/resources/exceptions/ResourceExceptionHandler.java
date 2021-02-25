@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.viatekbrasil.dslearn.services.exceptions.DatabaseException;
+import com.viatekbrasil.dslearn.services.exceptions.ForbiddenException;
 import com.viatekbrasil.dslearn.services.exceptions.ResourceNotFoundException;
+import com.viatekbrasil.dslearn.services.exceptions.UnauthorizedException;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
@@ -69,51 +71,23 @@ public class ResourceExceptionHandler {
 		return ResponseEntity.status(status).body(err);
 	}
 	
-//	@ExceptionHandler(AmazonServiceException.class)
-//	public ResponseEntity<StandardError> amazonService(
-//			AmazonServiceException e, 
-//			HttpServletRequest request) {
-//	
-//		HttpStatus status = HttpStatus.BAD_REQUEST;
-//		StandardError err = new StandardError();
-//		err.setTimeStamp(Instant.now());
-//		err.setStatus(status.value());
-//		err.setError("AWS Exception");
-//		err.setMessage(e.getMessage());
-//		err.setPath(request.getRequestURI());
-//		
-//		return ResponseEntity.status(status).body(err);
-//	}
-//	
-//	@ExceptionHandler(AmazonClientException.class)
-//	public ResponseEntity<StandardError> amazonClient(
-//			AmazonClientException e, 
-//			HttpServletRequest request) {
-//	
-//		HttpStatus status = HttpStatus.BAD_REQUEST;
-//		StandardError err = new StandardError();
-//		err.setTimeStamp(Instant.now());
-//		err.setStatus(status.value());
-//		err.setError("AWS Exception");
-//		err.setMessage(e.getMessage());
-//		err.setPath(request.getRequestURI());
-//		
-//		return ResponseEntity.status(status).body(err);
-//	}
-	
-	@ExceptionHandler(IllegalArgumentException.class)
-	public ResponseEntity<StandardError> illegalArgument(
-			IllegalArgumentException e, 
+	@ExceptionHandler(ForbiddenException.class)
+	public ResponseEntity<OAuthCustomError> forbidden(
+			ForbiddenException e, 
 			HttpServletRequest request) {
 	
-		HttpStatus status = HttpStatus.BAD_REQUEST;
-		StandardError err = new StandardError();
-		err.setTimeStamp(Instant.now());
-		err.setStatus(status.value());
-		err.setError("Bad request");
-		err.setMessage(e.getMessage());
-		err.setPath(request.getRequestURI());
+		OAuthCustomError err = new OAuthCustomError("Forbidden", e.getMessage());
 		
-		return ResponseEntity.status(status).body(err);
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
+	}
+	
+	@ExceptionHandler(UnauthorizedException.class)
+	public ResponseEntity<OAuthCustomError> unauthorized(
+			UnauthorizedException e, 
+			HttpServletRequest request) {
+	
+		OAuthCustomError err = new OAuthCustomError("Unauthorized", e.getMessage());
+		
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(err);
 	}
 }
