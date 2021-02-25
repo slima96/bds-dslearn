@@ -19,7 +19,7 @@ import com.viatekbrasil.dslearn.entities.enums.ResourceType;
 @Table(name = "tb_resource")
 public class Resource implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -32,7 +32,7 @@ public class Resource implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "offer_id")
 	private Offer offer;
-	
+
 	@OneToMany(mappedBy = "resource")
 	private List<Section> sections = new ArrayList<>();
 	
